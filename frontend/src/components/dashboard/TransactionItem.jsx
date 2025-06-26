@@ -25,25 +25,6 @@ export const TransactionItem = ({ transaction, currentWallet, onAccept }) => {
 
     const showAcceptButton = (status === 'PENDING') && isReceived;
 
-    // --- DEBUGGING LOG ---
-    // Este log te ayudará a ver en la consola del navegador por qué el botón no aparece.
-    // Busca una transacción pendiente que hayas recibido y revisa estos valores.
-    if (status === 'PENDING') {
-        console.log({
-            component: 'TransactionItem',
-            transactionId: transaction.id,
-            status: status,
-            shouldBePending: status === 'PENDING',
-            destinationWalletId: transaction.destinationWalletId,
-            typeOfDestinationWalletId: typeof transaction.destinationWalletId,
-            currentWalletId: currentWallet?.id,
-            typeOfCurrentWalletId: typeof currentWallet?.id,
-            isReceived: isReceived,
-            showAcceptButton: showAcceptButton,
-        });
-    }
-    // --- END DEBUGGING LOG ---
-
     const handleAccept = async () => {
  
         console.log(transaction.status);
