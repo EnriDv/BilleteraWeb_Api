@@ -28,10 +28,10 @@ export const AddPaymentMethodForm = ({ onSuccess, onCancel }) => {
             const gatewayResponse = await getPaymentTokenFromGateway(last4);
             
             const methodData = {
-                type: parseInt(type, 10), 
-                provider: gatewayResponse.provider,
-                token: gatewayResponse.token,
-                maskedIdentifier: gatewayResponse.maskedIdentifier,
+                Type: parseInt(type, 10), 
+                Provider: gatewayResponse.provider,
+                Token: gatewayResponse.token,
+                MaskedIdentifier: gatewayResponse.maskedIdentifier,
             };
 
             const response = await PaymentServices.addPaymentMethod(methodData);

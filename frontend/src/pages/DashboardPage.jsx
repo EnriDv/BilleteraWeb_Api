@@ -64,11 +64,12 @@ export const DashboardPage = ({ onLogout }) => {
     const fetchPaymentMethods = useCallback(async () => {
         PaymentServices.getPaymentMethods()
             .then(response => {
-                setPaymentMethods(response.data);
+                setPaymentMethods(Array.isArray(response.data) ? response.data : []);
             })
             .catch(error => {
                 console.error("Error al obtener métodos de pago:", error);
                 toast.error("No se pudieron cargar tus métodos de pago.");
+                setPaymentMethods([]); // Defensive: ensure array on error
             });
     }, []);
 
@@ -77,7 +78,7 @@ export const DashboardPage = ({ onLogout }) => {
         setHistoryError(null);
         UserServices.getTransactionHistory()
             .then(response => {
-                setTransactions(response.data);
+                setTransactions(Array.isArray(response.data) ? response.data : []);
             })
             .catch(err => {
                 setHistoryError(err);
@@ -154,8 +155,8 @@ export const DashboardPage = ({ onLogout }) => {
                             </button>
                         </div>
                         <ul className="space-y-3">
-                            {paymentMethods.length === 0 && <p className="text-sm text-gray-500 text-center py-4">No tienes métodos de pago guardados.</p>}
-                            {paymentMethods.map(method => (
+                            {Array.isArray(paymentMethods) && paymentMethods.length === 0 && <p className="text-sm text-gray-500 text-center py-4">No tienes métodos de pago guardados.</p>}
+                            {(Array.isArray(paymentMethods) ? paymentMethods : []).map(method => (
                                 <li key={method.id} className="flex items-center p-3 bg-gray-50 rounded-md">
                                     <CreditCard className="h-6 w-6 text-gray-500 mr-4" />
                                     {/* Vistazo aquí: Usamos el map para mostrar el nombre del tipo */}

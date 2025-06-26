@@ -6,8 +6,11 @@ export const TransactionHistory = ({ isLoading, error, transactions, currentWall
     const renderContent = () => {
         if (isLoading) return;
         if (error) { console.log(error); }
-        if (transactions.length === 0) {  }
+        if (transactions.length === 0) { return <p className="text-sm text-gray-500 text-center py-4">No hay transacciones recientes.</p>;}
         
+        if (!Array.isArray(transactions) || transactions.length === 0) {
+            return <p className="text-sm text-gray-500 text-center py-4">No hay transacciones recientes.</p>;
+        }
         return (
             <ul className="space-y-3">
                 {transactions.map(tx => (

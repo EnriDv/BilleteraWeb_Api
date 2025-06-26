@@ -4,6 +4,7 @@ using InterfaceAdapters.DTO.Transaction;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims; 
+using InterfaceAdapters.DTO.User;
 
 namespace InterfaceAdapters.Controllers;
 
@@ -89,6 +90,26 @@ public class UserController : ControllerBase
             return StatusCode(500, new { message = "Ocurrió un error inesperado al procesar la transferencia.", error = ex.Message });
         }
     }
+
+    [HttpPut("accept-transaction")]
+    public async Task<IActionResult> AcceptTransaction([FromBody] AcceptTransactionRequestDto request)
+    {
+        try
+        {
+            var userId = int.Parse(User.FindFirstValue("id"));
+            await _walletService.AcceptTransactionAsync(userId, request.TransactionId);
+            return Ok(new { message = "Transacción aceptada exitosamente." });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [HttpGet("history")]
     public async Task<IActionResult> GetTransactionHistory()
     {

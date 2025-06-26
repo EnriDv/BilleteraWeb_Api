@@ -6,6 +6,7 @@ import { formatCurrency } from '../../utils/formatters.js';
 import { CreditCard } from 'lucide-react';
 
 export const TopUpFlow = ({ paymentMethods, onSuccess, onCancel }) => {
+    const [step, setStep] = useState('form');
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods.find(m => m.isDefault)?.id || null);
     const [amount, setAmount] = useState('');
 
@@ -23,8 +24,8 @@ export const TopUpFlow = ({ paymentMethods, onSuccess, onCancel }) => {
 
         setStep('processing');
         const topUpData = {
-            paymentMethodId: selectedMethodId,
-            amount: numericAmount,
+            paymentMethodId: Number(selectedMethodId),
+            amount: numericAmount, 
         };
 
         PaymentServices.reloadWallet(topUpData)

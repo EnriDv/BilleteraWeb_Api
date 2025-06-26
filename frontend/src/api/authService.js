@@ -48,9 +48,9 @@ export const AuthServices = {
     console.log(`API Sim: Realizando liveness check para ${phone}`);
     const isSuccess = Math.random() > 0.3;
     if (!isSuccess) {
-        return simulateApiCall({ liveness_verified: false, error: "LIVENESS_FAILED" });
+        return AuthServices.simulateApiCall({ liveness_verified: false, error: "LIVENESS_FAILED" });
     }
-    return simulateApiCall({ liveness_verified: true});
+    return AuthServices.simulateApiCall({ liveness_verified: true});
   },
   requestPinRecoveryOtp : (input) => {
     const requestData = {

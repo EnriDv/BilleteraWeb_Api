@@ -21,5 +21,8 @@ export const UserServices = {
     },
     getBalance : () => {
         return apiClient.get('/user/balance');
+    },
+    acceptTransaction: (transactionId) => {
+        return apiClient.put('/user/accept-transaction', { transactionId: String(transactionId) });
     }
 }

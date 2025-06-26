@@ -61,16 +61,31 @@ public class WalletService : IWalletService
         _unitOfWork.Wallets.Update(senderWallet);
         _unitOfWork.Wallets.Update(recipientWallet);
 
-        var transaction = new Transaction
-        {
-            SourceWalletId = senderWallet.Id,
-            DestinationWalletId = recipientWallet.Id,
-            Amount = amount,
-            Type = TransactionType.P2P_TRANSFER,
-            Status = TransactionStatus.COMPLETED,
-            Description = description,
-            Timestamp = DateTime.UtcNow
-        };
+        Transaction transaction;
+        if(amount >= 1000){
+            transaction = new Transaction
+            {
+                SourceWalletId = senderWallet.Id,
+                DestinationWalletId = recipientWallet.Id,
+                Amount = amount,
+                Type = TransactionType.P2P_TRANSFER,
+                Status = TransactionStatus.PENDING,
+                Description = description,
+                Timestamp = DateTime.UtcNow
+            };
+        }
+        else {
+            transaction = new Transaction
+            {
+                SourceWalletId = senderWallet.Id,
+                DestinationWalletId = recipientWallet.Id,
+                Amount = amount,
+                Type = TransactionType.P2P_TRANSFER,
+                Status = TransactionStatus.COMPLETED,
+                Description = description,
+                Timestamp = DateTime.UtcNow
+            };
+        }
         
         await _unitOfWork.Transactions.AddAsync(transaction);
 
@@ -86,6 +101,29 @@ public class WalletService : IWalletService
             transaction.DestinationWalletId.Value
         );
     }
+
+
+    public async Task AcceptTransactionAsync(int userId, Guid transactionId)
+    {
+        var transactions = await _unitOfWork.Transactions.FindAsync(t => t.Id == transactionId);
+        var tx = transactions.FirstOrDefault();
+
+        if (tx == null)
+            throw new KeyNotFoundException("La transacción no existe.");
+
+        var recipientWallets = await _unitOfWork.Wallets.FindAsync(w => w.Id == tx.DestinationWalletId);
+        var wallet = recipientWallets.FirstOrDefault();
+
+        if (wallet == null || wallet.UserId != userId)
+            throw new UnauthorizedAccessException("Ha ocurrido un error al aceptar la transacción.");
+
+        if (tx.Status != TransactionStatus.PENDING)
+            throw new InvalidOperationException("La transacción no está pendiente.");
+
+        tx.Status = TransactionStatus.COMPLETED;
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task<IEnumerable<TransactionDto>> GetTransactionHistoryAsync(int userId)
     {
         var wallet = (await _unitOfWork.Wallets.FindAsync(w => w.UserId == userId)).FirstOrDefault();
