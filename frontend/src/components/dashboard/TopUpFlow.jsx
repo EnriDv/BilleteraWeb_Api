@@ -8,6 +8,7 @@ import { CreditCard } from 'lucide-react';
 export const TopUpFlow = ({ paymentMethods, onSuccess, onCancel }) => {
     const [selectedMethodId, setSelectedMethodId] = useState(paymentMethods.find(m => m.isDefault)?.id || null);
     const [amount, setAmount] = useState('');
+    const [step, setStep] = useState('form');
 
     const handleTopUp = async (e) => {
         e.preventDefault();
