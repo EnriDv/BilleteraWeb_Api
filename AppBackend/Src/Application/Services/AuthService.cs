@@ -65,7 +65,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<bool> OtpValidateAsync(string phoneNumber, string otp, string? razon){
-        if(razon != null || razon!=""){
+        if(razon != null ){
             var otpHashI = _passwordHasher.Hash(otp);
             var otpEntityI = await _unitOfWork.Otps.FindValidOtpAsync("11234567", OtpType.TRANSACTION_CONFIRMATION);
             if (otpEntityI == null || !_passwordHasher.Verify(otp, otpEntityI.CodeHash))
@@ -76,6 +76,7 @@ public class AuthService : IAuthService
         }
         var otpHash = _passwordHasher.Hash(otp);
         var otpEntity = await _unitOfWork.Otps.FindValidOtpAsync(phoneNumber, OtpType.REGISTRATION);
+        Console.WriteLine(otpEntity);
         if (otpEntity == null || !_passwordHasher.Verify(otp, otpEntity.CodeHash))
         {
             return false;

@@ -16,6 +16,7 @@ export const OtpVerificationForm = ({ onSubmit, isLoading, phoneNumberI}) => {
       onSubmit(otp);
       return;
     }
+    console.log(response);
     window.alert("otp no valido, revisa tu bandeja de entrada.");
   };
 
